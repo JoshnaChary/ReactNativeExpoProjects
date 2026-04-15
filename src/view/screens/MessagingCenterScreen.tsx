@@ -77,6 +77,10 @@ export const MessagingCenterScreen = () => {
               }
               if (id === "appointments") {
                 navigation.navigate(ROUTES.APPOINTMENTS);
+                return;
+              }
+              if (id === "prescriptions") {
+                navigation.navigate(ROUTES.PRESCRIPTIONS);
               }
             }}
           />

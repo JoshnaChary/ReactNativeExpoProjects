@@ -1,5 +1,6 @@
 import { ROUTES } from "@/constants/navigation";
 import { AppointmentsScreen } from "@/view/screens/AppointmentsScreen";
+import { PrescriptionsScreen } from "@/view/screens/PrescriptionsScreen";
 import { PatientPortalScreen } from "@/view/screens/PatientPortalScreen";
 import { MessagingCenterScreen } from "@/view/screens/MessagingCenterScreen";
 import { NavigationContainer } from "@react-navigation/native";
@@ -23,6 +24,10 @@ export const AppNavigator = () => {
         <RootStack.Screen
           name={ROUTES.APPOINTMENTS}
           component={AppointmentsScreen}
+        />
+        <RootStack.Screen
+          name={ROUTES.PRESCRIPTIONS}
+          component={PrescriptionsScreen}
         />
       </RootStack.Navigator>
     </NavigationContainer>

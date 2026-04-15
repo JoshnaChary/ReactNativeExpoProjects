@@ -58,6 +58,10 @@ export const AppointmentsWebView = () => {
             }
             if (id === "messages") {
               navigation.navigate(ROUTES.MESSAGING);
+              return;
+            }
+            if (id === "prescriptions") {
+              navigation.navigate(ROUTES.PRESCRIPTIONS);
             }
           }}
         />

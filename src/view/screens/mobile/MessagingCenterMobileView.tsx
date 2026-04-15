@@ -181,6 +181,10 @@ export const MessagingCenterMobileView = () => {
         }
         if (id === "appointments") {
           navigation.navigate(ROUTES.APPOINTMENTS);
+          return;
+        }
+        if (id === "prescriptions") {
+          navigation.navigate(ROUTES.PRESCRIPTIONS);
         }
       }}
     >
