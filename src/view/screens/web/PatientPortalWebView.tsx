@@ -1,6 +1,6 @@
 import { FIGMA_MAIN_SPACING } from "@/constants/figmaHomeLayout";
 import { WEB_HOME } from "@/constants/layout";
-import { ROUTES } from "@/constants/navigation";
+import { navigateFromMenuId } from "@/navigation/menuNavigation";
 import { theme } from "@/theme";
 import { ActionCard } from "@/view/components/portal/ActionCard";
 import { AppointmentCard } from "@/view/components/portal/AppointmentCard";
@@ -28,19 +28,7 @@ export const PatientPortalWebView = ({ summary }: PortalScreenViewProps) => {
         <Sidebar
           summary={summary}
           selectedNavId="home"
-          onNavItemPress={(id) => {
-            if (id === "messages") {
-              navigation.navigate(ROUTES.MESSAGING);
-              return;
-            }
-            if (id === "appointments") {
-              navigation.navigate(ROUTES.APPOINTMENTS);
-              return;
-            }
-            if (id === "prescriptions") {
-              navigation.navigate(ROUTES.PRESCRIPTIONS);
-            }
-          }}
+          onNavItemPress={(id) => navigateFromMenuId(navigation, id)}
         />
         <ScrollView
           style={styles.mainScroll}

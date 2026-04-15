@@ -6,3 +6,10 @@ export const FIGMA_HOME_ASSETS = {
   messagesNavDot:
     "https://www.figma.com/api/mcp/asset/90ecbe30-8e0d-4b7b-83d1-cccc73c00dad",
 } as const;
+
+export const FIGMA_LAB_ASSETS = {
+  beakerIcon:
+    "https://www.figma.com/api/mcp/asset/a770dbe6-0b9f-4d7c-94c2-7e1530849ed3",
+  lipidHistoryChart:
+    "https://www.figma.com/api/mcp/asset/6a8edb10-5375-47a1-9ad2-f622f59215e2",
+} as const;

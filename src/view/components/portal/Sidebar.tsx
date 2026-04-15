@@ -29,17 +29,17 @@ const renderItem = (
     return <View key={`s-${index}`} style={styles.spacer} />;
   }
   return (
-    <View key={item.id} style={styles.linkRow}>
-      <Pressable
-        accessibilityRole="button"
-        onPress={() => onNavItemPress?.(item.id)}
-      >
-        <Text style={styles.link}>{item.label}</Text>
-      </Pressable>
+    <Pressable
+      key={item.id}
+      style={styles.linkRow}
+      accessibilityRole="button"
+      onPress={() => onNavItemPress?.(item.id)}
+    >
+      <Text style={styles.link}>{item.label}</Text>
       {(selectedNavId ? item.id === selectedNavId : item.showMessageDot) ? (
         <View style={styles.messageDot} />
       ) : null}
-    </View>
+    </Pressable>
   );
 };
 

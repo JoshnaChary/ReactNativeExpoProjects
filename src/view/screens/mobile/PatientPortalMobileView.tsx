@@ -1,7 +1,7 @@
 import { FIGMA_MAIN_SPACING } from "@/constants/figmaHomeLayout";
 import { MOBILE_LAYOUT } from "@/constants/layout";
-import { ROUTES } from "@/constants/navigation";
 import type { RootStackParamList } from "@/navigation/types";
+import { navigateFromMenuId } from "@/navigation/menuNavigation";
 import { theme } from "@/theme";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -28,19 +28,7 @@ export const PatientPortalMobileView = ({ summary }: PortalScreenViewProps) => {
       menuTitle={summary.memberPortalTitle}
       navItems={summary.sidebarNav}
       selectedNavId="home"
-      onSelectMenuItem={(id) => {
-        if (id === "messages") {
-          navigation.navigate(ROUTES.MESSAGING);
-          return;
-        }
-        if (id === "appointments") {
-          navigation.navigate(ROUTES.APPOINTMENTS);
-          return;
-        }
-        if (id === "prescriptions") {
-          navigation.navigate(ROUTES.PRESCRIPTIONS);
-        }
-      }}
+      onSelectMenuItem={(id) => navigateFromMenuId(navigation, id)}
     >
       <ScrollView
         style={styles.scroll}

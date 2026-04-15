@@ -1,18 +1,18 @@
-import { MOCK_APPOINTMENTS } from "@/constants/appointmentsMockData";
-import { FIGMA_APPOINTMENTS } from "@/constants/figmaAppointmentsLayout";
+import { FIGMA_LAB_RESULTS } from "@/constants/figmaLabResultsLayout";
 import { MOBILE_LAYOUT } from "@/constants/layout";
+import { MOCK_LAB_RESULTS } from "@/constants/labResultsMockData";
 import { MOCK_PORTAL_SUMMARY } from "@/constants/mockData";
 import { ROUTES } from "@/constants/navigation";
 import { navigateFromMenuId } from "@/navigation/menuNavigation";
+import type { LabResultsTab } from "@/model/LabResultItem";
 import type { RootStackParamList } from "@/navigation/types";
 import { theme } from "@/theme";
-import { AppointmentRow } from "@/view/components/appointments/AppointmentRow";
+import { LabResultRow } from "@/view/components/lab/LabResultRow";
 import { MobileScreenScaffold } from "@/view/components/mobile/MobileScreenScaffold";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useMemo, useState } from "react";
 import {
-  Pressable,
   type LayoutChangeEvent,
   ScrollView,
   StyleSheet,
@@ -20,24 +20,26 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import type { AppointmentTab } from "@/model/AppointmentItem";
 
-export const AppointmentsMobileView = () => {
+export const LabResultsMobileView = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [activeTab, setActiveTab] = useState<AppointmentTab>("upcoming");
-  const [tabMetrics, setTabMetrics] = useState<Record<AppointmentTab, { x: number; width: number }>>(
+  const [activeTab, setActiveTab] = useState<LabResultsTab>("recent");
+  const [tabMetrics, setTabMetrics] = useState<Record<LabResultsTab, { x: number; width: number }>>(
     {
-      upcoming: { x: 0, width: 90 },
+      recent: { x: 0, width: 56 },
       past: { x: 0, width: 40 },
     },
   );
-  const appointments = useMemo(
-    () => MOCK_APPOINTMENTS.filter((item) => item.tab === activeTab),
+
+  const tabItems = useMemo(
+    () => MOCK_LAB_RESULTS.filter((item) => item.tab === activeTab),
     [activeTab],
   );
+  const waitingItems = tabItems.filter((item) => item.section === "waiting");
+  const completedItems = tabItems.filter((item) => item.section === "completed");
 
-  const onTabLayout = (tab: AppointmentTab) => (event: LayoutChangeEvent) => {
+  const onTabLayout = (tab: LabResultsTab) => (event: LayoutChangeEvent) => {
     const { x, width } = event.nativeEvent.layout;
     setTabMetrics((prev) => {
       const current = prev[tab];
@@ -48,10 +50,10 @@ export const AppointmentsMobileView = () => {
 
   return (
     <MobileScreenScaffold
-      title="Appointments"
+      title="Lab results"
       menuTitle={MOCK_PORTAL_SUMMARY.memberPortalTitle}
       navItems={MOCK_PORTAL_SUMMARY.sidebarNav}
-      selectedNavId="appointments"
+      selectedNavId="lab"
       onSelectMenuItem={(id) => navigateFromMenuId(navigation, id)}
     >
       <ScrollView
@@ -59,31 +61,24 @@ export const AppointmentsMobileView = () => {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.headerRow}>
-          <Text style={styles.pageTitle}>Appointments</Text>
-          <Pressable accessibilityRole="button" style={styles.requestBtn}>
-            <Text style={styles.requestBtnLabel}>Request Appointment</Text>
-          </Pressable>
-        </View>
+        <Text style={styles.pageTitle}>Lab Results</Text>
 
         <View style={styles.tabRow}>
           <TouchableOpacity
             accessibilityRole="button"
             activeOpacity={0.8}
             style={styles.tabButton}
-            hitSlop={8}
-            onLayout={onTabLayout("upcoming")}
-            onPress={() => setActiveTab("upcoming")}
+            onLayout={onTabLayout("recent")}
+            onPress={() => setActiveTab("recent")}
           >
-            <Text style={activeTab === "upcoming" ? styles.tabActive : styles.tabInactive}>
-              Upcoming
+            <Text style={activeTab === "recent" ? styles.tabActive : styles.tabInactive}>
+              Recent
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             accessibilityRole="button"
             activeOpacity={0.8}
             style={styles.tabButton}
-            hitSlop={8}
             onLayout={onTabLayout("past")}
             onPress={() => setActiveTab("past")}
           >
@@ -103,11 +98,54 @@ export const AppointmentsMobileView = () => {
           />
         </View>
 
-        <View style={styles.list}>
-          {appointments.map((appointment) => (
-            <AppointmentRow key={appointment.id} appointment={appointment} compact />
-          ))}
-        </View>
+        {activeTab === "recent" ? (
+          <>
+            {waitingItems.length > 0 ? (
+              <View style={styles.sectionWrap}>
+                <Text style={styles.sectionLabel}>Waiting for results</Text>
+                <View style={styles.cards}>
+                  {waitingItems.map((item) => (
+                    <LabResultRow
+                      key={item.id}
+                      item={item}
+                      compact
+                      onPressViewResults={() => navigation.navigate(ROUTES.LAB_RESULT_DETAIL)}
+                    />
+                  ))}
+                </View>
+              </View>
+            ) : null}
+
+            {completedItems.length > 0 ? (
+              <View style={styles.sectionWrap}>
+                <Text style={styles.sectionLabel}>Completed</Text>
+                <View style={styles.cards}>
+                  {completedItems.map((item) => (
+                    <LabResultRow
+                      key={item.id}
+                      item={item}
+                      compact
+                      onPressViewResults={() => navigation.navigate(ROUTES.LAB_RESULT_DETAIL)}
+                    />
+                  ))}
+                </View>
+              </View>
+            ) : null}
+          </>
+        ) : (
+          <View style={styles.pastWrap}>
+            <View style={styles.cards}>
+              {tabItems.map((item) => (
+                <LabResultRow
+                  key={item.id}
+                  item={item}
+                  compact
+                  onPressViewResults={() => navigation.navigate(ROUTES.LAB_RESULT_DETAIL)}
+                />
+              ))}
+            </View>
+          </View>
+        )}
       </ScrollView>
     </MobileScreenScaffold>
   );
@@ -118,50 +156,28 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingTop: 24,
+    paddingTop: 20,
     paddingHorizontal: MOBILE_LAYOUT.horizontalPadding,
     paddingBottom: theme.spacing.xxl,
-  },
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: theme.spacing.md,
   },
   pageTitle: {
     fontFamily: theme.typography.fontFamily.medium,
     fontSize: theme.typography.size.title20,
     lineHeight: 24,
     color: theme.colors.charcoal,
-    flexShrink: 1,
-  },
-  requestBtn: {
-    minHeight: FIGMA_APPOINTMENTS.requestButtonHeight,
-    backgroundColor: theme.colors.royal300,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 14,
-    minWidth: 168,
-  },
-  requestBtnLabel: {
-    fontFamily: theme.typography.fontFamily.medium,
-    fontSize: theme.typography.size.body16,
-    lineHeight: 19,
-    color: theme.colors.white,
   },
   tabRow: {
-    marginTop: 26,
+    marginTop: 18,
     flexDirection: "row",
     alignItems: "center",
-    gap: 20,
+    gap: 24,
     alignSelf: "flex-start",
     position: "relative",
     paddingBottom: 6,
   },
   tabButton: {
-    minHeight: 28,
+    minHeight: 24,
     justifyContent: "center",
-    paddingVertical: 0,
   },
   tabActive: {
     fontFamily: theme.typography.fontFamily.medium,
@@ -178,11 +194,23 @@ const styles = StyleSheet.create({
   tabIndicator: {
     position: "absolute",
     bottom: 0,
-    height: FIGMA_APPOINTMENTS.tabUnderlineHeight,
+    height: FIGMA_LAB_RESULTS.tabUnderlineHeight,
     backgroundColor: theme.colors.royal300,
   },
-  list: {
-    marginTop: 20,
+  sectionWrap: {
+    marginTop: 16,
+  },
+  sectionLabel: {
+    fontFamily: theme.typography.fontFamily.light,
+    fontSize: theme.typography.size.caption,
+    lineHeight: 16,
+    color: theme.colors.charcoal,
+  },
+  cards: {
+    marginTop: 8,
     gap: 10,
+  },
+  pastWrap: {
+    marginTop: 16,
   },
 });

@@ -2,6 +2,7 @@ import { MOCK_APPOINTMENTS } from "@/constants/appointmentsMockData";
 import { FIGMA_APPOINTMENTS } from "@/constants/figmaAppointmentsLayout";
 import { WEB_HOME } from "@/constants/layout";
 import { ROUTES } from "@/constants/navigation";
+import { navigateFromMenuId } from "@/navigation/menuNavigation";
 import type { RootStackParamList } from "@/navigation/types";
 import { theme } from "@/theme";
 import { AppointmentRow } from "@/view/components/appointments/AppointmentRow";
@@ -51,19 +52,7 @@ export const AppointmentsWebView = () => {
         <Sidebar
           summary={MOCK_PORTAL_SUMMARY}
           selectedNavId="appointments"
-          onNavItemPress={(id) => {
-            if (id === "home") {
-              navigation.navigate(ROUTES.HOME);
-              return;
-            }
-            if (id === "messages") {
-              navigation.navigate(ROUTES.MESSAGING);
-              return;
-            }
-            if (id === "prescriptions") {
-              navigation.navigate(ROUTES.PRESCRIPTIONS);
-            }
-          }}
+          onNavItemPress={(id) => navigateFromMenuId(navigation, id)}
         />
 
         <View style={styles.main}>

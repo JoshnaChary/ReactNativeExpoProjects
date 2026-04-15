@@ -1,10 +1,10 @@
 import { MOCK_PORTAL_SUMMARY } from "@/constants/mockData";
-import { ROUTES } from "@/constants/navigation";
 import {
   MOCK_CHAT_MESSAGES,
   MOCK_THREADS,
   notificationsForThreadId,
 } from "@/constants/messagingMockData";
+import { navigateFromMenuId } from "@/navigation/menuNavigation";
 import type { RootStackParamList } from "@/navigation/types";
 import { useIsWeb } from "@/hooks/useIsWeb";
 import { theme } from "@/theme";
@@ -70,19 +70,7 @@ export const MessagingCenterScreen = () => {
           <PortalNavSidebar
             summary={MOCK_PORTAL_SUMMARY}
             selectedNavId="messages"
-            onNavItemPress={(id) => {
-              if (id === "home") {
-                navigation.navigate(ROUTES.HOME);
-                return;
-              }
-              if (id === "appointments") {
-                navigation.navigate(ROUTES.APPOINTMENTS);
-                return;
-              }
-              if (id === "prescriptions") {
-                navigation.navigate(ROUTES.PRESCRIPTIONS);
-              }
-            }}
+            onNavItemPress={(id) => navigateFromMenuId(navigation, id)}
           />
         }
         threads={MOCK_THREADS}

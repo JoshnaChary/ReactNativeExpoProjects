@@ -4,7 +4,7 @@ import {
   notificationsForThreadId,
 } from "@/constants/messagingMockData";
 import { MOCK_PORTAL_SUMMARY } from "@/constants/mockData";
-import { ROUTES } from "@/constants/navigation";
+import { navigateFromMenuId } from "@/navigation/menuNavigation";
 import type { RootStackParamList } from "@/navigation/types";
 import type { MessageThread } from "@/model/MessagingCenter";
 import { theme } from "@/theme";
@@ -166,26 +166,11 @@ export const MessagingCenterMobileView = () => {
       navItems={MOCK_PORTAL_SUMMARY.sidebarNav}
       selectedNavId="messages"
       onSelectMenuItem={(id) => {
-        if (id === "home") {
-          navigation.navigate(ROUTES.HOME);
-          return;
-        }
         if (id === "messages") {
           setMode("list");
           return;
         }
-        if (id === "billing") {
-          setSelectedThreadId("t-billing");
-          setMode("thread");
-          return;
-        }
-        if (id === "appointments") {
-          navigation.navigate(ROUTES.APPOINTMENTS);
-          return;
-        }
-        if (id === "prescriptions") {
-          navigation.navigate(ROUTES.PRESCRIPTIONS);
-        }
+        navigateFromMenuId(navigation, id);
       }}
     >
       <FlatList

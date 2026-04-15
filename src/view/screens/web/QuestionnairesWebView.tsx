@@ -1,25 +1,25 @@
-import { FIGMA_PRESCRIPTIONS } from "@/constants/figmaPrescriptionsLayout";
+import { FIGMA_QUESTIONNAIRES } from "@/constants/figmaQuestionnairesLayout";
 import { WEB_HOME } from "@/constants/layout";
 import { MOCK_PORTAL_SUMMARY } from "@/constants/mockData";
 import { navigateFromMenuId } from "@/navigation/menuNavigation";
-import { MOCK_PRESCRIPTIONS } from "@/constants/prescriptionsMockData";
-import type { PrescriptionTab } from "@/model/PrescriptionItem";
+import { MOCK_QUESTIONNAIRES } from "@/constants/questionnairesMockData";
+import type { QuestionnaireTab } from "@/model/QuestionnaireItem";
 import type { RootStackParamList } from "@/navigation/types";
 import { theme } from "@/theme";
-import { PrescriptionRow } from "@/view/components/prescriptions/PrescriptionRow";
+import { QuestionnaireRow } from "@/view/components/questionnaires/QuestionnaireRow";
 import { Sidebar } from "@/view/components/portal/Sidebar";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useMemo, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export const PrescriptionsWebView = () => {
+export const QuestionnairesWebView = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [activeTab, setActiveTab] = useState<PrescriptionTab>("active");
+  const [activeTab, setActiveTab] = useState<QuestionnaireTab>("todo");
 
-  const prescriptions = useMemo(
-    () => MOCK_PRESCRIPTIONS.filter((p) => p.tab === activeTab),
+  const items = useMemo(
+    () => MOCK_QUESTIONNAIRES.filter((item) => item.tab === activeTab),
     [activeTab],
   );
 
@@ -28,45 +28,50 @@ export const PrescriptionsWebView = () => {
       <View style={styles.frame}>
         <Sidebar
           summary={MOCK_PORTAL_SUMMARY}
-          selectedNavId="prescriptions"
+          selectedNavId="questionnaires"
           onNavItemPress={(id) => navigateFromMenuId(navigation, id)}
         />
 
         <View style={styles.main}>
-          <Text style={styles.pageTitle}>Your Prescriptions</Text>
+          <Text style={styles.pageTitle}>Questionnaires</Text>
 
           <View style={styles.tabRow}>
             <TouchableOpacity
               accessibilityRole="button"
               activeOpacity={0.8}
               style={styles.tabButton}
-              onPress={() => setActiveTab("active")}
+              onPress={() => setActiveTab("todo")}
             >
-              <Text style={activeTab === "active" ? styles.tabActive : styles.tabInactive}>
-                Active
+              <Text style={activeTab === "todo" ? styles.tabActive : styles.tabInactive}>
+                To Do
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               accessibilityRole="button"
               activeOpacity={0.8}
               style={styles.tabButton}
-              onPress={() => setActiveTab("inactive")}
+              onPress={() => setActiveTab("progress")}
             >
-              <Text style={activeTab === "inactive" ? styles.tabActive : styles.tabInactive}>
-                Inactive
+              <Text style={activeTab === "progress" ? styles.tabActive : styles.tabInactive}>
+                Progress
               </Text>
             </TouchableOpacity>
           </View>
           <View
             style={[
               styles.tabIndicator,
-              activeTab === "active" ? styles.tabIndicatorActive : styles.tabIndicatorInactive,
+              activeTab === "todo" ? styles.todoIndicator : styles.progressIndicator,
             ]}
           />
 
+          <Text style={styles.helpText}>
+            Please complete all the questionnaires that were assigned to you from your care team
+            and provider to help track your progress
+          </Text>
+
           <View style={styles.list}>
-            {prescriptions.map((item) => (
-              <PrescriptionRow key={item.id} item={item} />
+            {items.map((item) => (
+              <QuestionnaireRow key={item.id} item={item} />
             ))}
           </View>
         </View>
@@ -93,9 +98,9 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     backgroundColor: theme.colors.white,
-    paddingTop: FIGMA_PRESCRIPTIONS.contentPaddingTop,
-    paddingLeft: FIGMA_PRESCRIPTIONS.contentPaddingLeft,
-    paddingRight: FIGMA_PRESCRIPTIONS.contentPaddingRight,
+    paddingTop: FIGMA_QUESTIONNAIRES.contentPaddingTop,
+    paddingLeft: FIGMA_QUESTIONNAIRES.contentPaddingLeft,
+    paddingRight: FIGMA_QUESTIONNAIRES.contentPaddingRight,
     paddingBottom: theme.spacing.xxl,
   },
   pageTitle: {
@@ -105,10 +110,10 @@ const styles = StyleSheet.create({
     color: theme.colors.charcoal,
   },
   tabRow: {
-    marginTop: FIGMA_PRESCRIPTIONS.titleToTabsGap,
+    marginTop: FIGMA_QUESTIONNAIRES.titleToTabsGap,
     flexDirection: "row",
     alignItems: "center",
-    gap: 28,
+    gap: 18,
   },
   tabButton: {
     minHeight: 24,
@@ -128,19 +133,28 @@ const styles = StyleSheet.create({
   },
   tabIndicator: {
     marginTop: 4,
-    height: FIGMA_PRESCRIPTIONS.tabUnderlineHeight,
+    height: FIGMA_QUESTIONNAIRES.tabUnderlineHeight,
     backgroundColor: theme.colors.royal300,
   },
-  tabIndicatorActive: {
-    width: FIGMA_PRESCRIPTIONS.activeUnderlineWidth,
+  todoIndicator: {
+    width: FIGMA_QUESTIONNAIRES.todoUnderlineWidth,
   },
-  tabIndicatorInactive: {
-    width: 78,
-    marginLeft: 98,
+  progressIndicator: {
+    width: 68,
+    marginLeft: 72,
+  },
+  helpText: {
+    marginTop: FIGMA_QUESTIONNAIRES.tabsToHelpGap,
+    width: 675,
+    maxWidth: "100%",
+    fontFamily: theme.typography.fontFamily.light,
+    fontSize: theme.typography.size.caption,
+    lineHeight: 16,
+    color: theme.colors.charcoal,
   },
   list: {
-    marginTop: FIGMA_PRESCRIPTIONS.tabsToCardsGap,
-    gap: FIGMA_PRESCRIPTIONS.cardsGap,
+    marginTop: FIGMA_QUESTIONNAIRES.helpToCardsGap,
+    gap: FIGMA_QUESTIONNAIRES.cardsGap,
     width: "100%",
     maxWidth: 1091,
   },

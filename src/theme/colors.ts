@@ -25,8 +25,16 @@ export const colors = {
   dividerLine: "#DCDCDC",
   /** mMR light/Ice / Ice-200 — mobile secondary borders */
   ice200: "#CBD0D7",
+  /** mMR light/Ice / Ice-300 */
+  ice300: "#657080",
+  /** mMR light/Ice / Ice-500 */
+  ice500: "#303A49",
   /** mMR light/Ice / Ice-100 */
   ice100: "#DDE1E9",
+  /** mMR light/Sun/Sun-100 */
+  sun100: "#FFF1DD",
+  /** mMR light/Forest/Forest-100 */
+  forest100: "#D9ECDC",
   /** Notification dot (matches Royal-300) */
   messageDot: "#3B74D1",
   /** Legacy semantic aliases */
