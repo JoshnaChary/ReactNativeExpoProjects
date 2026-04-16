@@ -1,10 +1,10 @@
 export const FIGMA_HOME_ASSETS = {
   messageAvatarRing:
-    "https://www.figma.com/api/mcp/asset/c3b76456-55dd-4f94-bf0f-d9d8a3af98a7",
+    "https://www.figma.com/api/mcp/asset/7d14af8d-1199-4f43-9f86-f72afef1ea84",
   messageIconOverlay:
-    "https://www.figma.com/api/mcp/asset/ac90dd6e-432a-4f5c-b18c-c4f83b17b134",
+    "https://www.figma.com/api/mcp/asset/779fedc4-732e-49c3-a6d7-01a26845db6a",
   messagesNavDot:
-    "https://www.figma.com/api/mcp/asset/90ecbe30-8e0d-4b7b-83d1-cccc73c00dad",
+    "https://www.figma.com/api/mcp/asset/82274945-50fe-4fcd-b18c-0268a5fece1d",
 } as const;
 
 export const FIGMA_LAB_ASSETS = {

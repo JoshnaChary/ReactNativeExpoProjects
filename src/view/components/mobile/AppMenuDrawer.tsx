@@ -63,9 +63,12 @@ const NavRow = ({
 }) => {
   if (item.kind === "divider") {
     return (
-      <Text style={styles.menuDivider} numberOfLines={1}>
-        {item.line}
-      </Text>
+      <View
+        style={[
+          styles.menuDivider,
+          item.line.length > 18 ? styles.menuDividerLong : styles.menuDividerShort,
+        ]}
+      />
     );
   }
   if (item.kind === "spacer") {
@@ -80,7 +83,9 @@ const NavRow = ({
       <Text style={styles.menuLink}>{item.label}</Text>
       {(selectedNavId ? item.id === selectedNavId : item.showMessageDot) ? (
         <View style={styles.menuDot} />
-      ) : null}
+      ) : (
+        <View style={styles.menuDotPlaceholder} />
+      )}
     </Pressable>
   );
 };
@@ -117,26 +122,37 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: theme.spacing.xs,
+    minHeight: 28,
   },
   menuLink: {
-    fontFamily: theme.typography.fontFamily.medium,
+    fontFamily: theme.typography.fontFamily.regular,
     fontSize: theme.typography.size.body18,
     color: theme.colors.charcoal,
   },
   menuDivider: {
-    fontFamily: theme.typography.fontFamily.medium,
-    fontSize: theme.typography.size.body16,
-    color: theme.colors.dividerLine,
-    marginVertical: theme.spacing.xs,
+    height: 1,
+    backgroundColor: "#E3E6EB",
+    marginTop: 14,
+    marginBottom: 13,
+  },
+  menuDividerShort: {
+    width: 96,
+  },
+  menuDividerLong: {
+    width: 156,
   },
   menuSpacer: {
-    height: theme.spacing.xs,
+    height: 28,
   },
   menuDot: {
     width: 11,
     height: 11,
     borderRadius: 5.5,
     backgroundColor: theme.colors.messageDot,
+  },
+  menuDotPlaceholder: {
+    width: 11,
+    height: 11,
+    opacity: 0,
   },
 });

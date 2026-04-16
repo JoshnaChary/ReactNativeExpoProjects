@@ -12,35 +12,27 @@ type SidebarProps = {
   selectedNavId?: string;
 };
 
-const renderItem = (
-  item: SidebarNavItem,
-  index: number,
-  onNavItemPress?: (navId: string) => void,
-  selectedNavId?: string,
-) => {
-  if (item.kind === "divider") {
-    return (
-      <Text key={`d-${index}`} style={styles.dividerLine}>
-        {item.line}
-      </Text>
-    );
-  }
-  if (item.kind === "spacer") {
-    return <View key={`s-${index}`} style={styles.spacer} />;
-  }
+const MenuItem = ({
+  item,
+  onPress,
+  selectedNavId,
+}: {
+  item: Extract<SidebarNavItem, { kind: "link" }>;
+  onPress?: (navId: string) => void;
+  selectedNavId?: string;
+}) => {
+  const showDot = selectedNavId ? item.id === selectedNavId : item.showMessageDot;
   return (
-    <Pressable
-      key={item.id}
-      style={styles.linkRow}
-      accessibilityRole="button"
-      onPress={() => onNavItemPress?.(item.id)}
-    >
+    <Pressable style={styles.linkRow} accessibilityRole="button" onPress={() => onPress?.(item.id)}>
       <Text style={styles.link}>{item.label}</Text>
-      {(selectedNavId ? item.id === selectedNavId : item.showMessageDot) ? (
-        <View style={styles.messageDot} />
-      ) : null}
+      {showDot ? <View style={styles.messageDot} /> : <View style={styles.messageDotPlaceholder} />}
     </Pressable>
   );
+};
+
+const MenuDivider = ({ line }: { line: string }) => {
+  const isLong = line.length > 18;
+  return <View style={[styles.dividerLine, isLong ? styles.dividerLong : styles.dividerShort]} />;
 };
 
 export const Sidebar = ({ summary, onNavItemPress, selectedNavId }: SidebarProps) => {
@@ -58,9 +50,22 @@ export const Sidebar = ({ summary, onNavItemPress, selectedNavId }: SidebarProps
           contentContainerStyle={styles.navInner}
           showsVerticalScrollIndicator={false}
         >
-          {summary.sidebarNav.map((item, index) =>
-            renderItem(item, index, onNavItemPress, selectedNavId),
-          )}
+          {summary.sidebarNav.map((item, index) => {
+            if (item.kind === "spacer") {
+              return <View key={`s-${index}`} style={styles.spacer} />;
+            }
+            if (item.kind === "divider") {
+              return <MenuDivider key={`d-${index}`} line={item.line} />;
+            }
+            return (
+              <MenuItem
+                key={item.id}
+                item={item}
+                onPress={onNavItemPress}
+                selectedNavId={selectedNavId}
+              />
+            );
+          })}
         </ScrollView>
       </View>
     </View>
@@ -109,27 +114,39 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingRight: 12,
+    width: "100%",
+    minHeight: 28,
   },
   link: {
-    fontFamily: theme.typography.fontFamily.medium,
-    fontSize: theme.typography.size.title20,
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.size.body18,
     lineHeight: 28,
     color: theme.colors.charcoal,
   },
   dividerLine: {
-    fontFamily: theme.typography.fontFamily.medium,
-    fontSize: theme.typography.size.title20,
-    lineHeight: 28,
-    color: theme.colors.dividerLine,
+    height: 1,
+    backgroundColor: "#E3E6EB",
+    marginTop: 14,
+    marginBottom: 13,
+  },
+  dividerShort: {
+    width: 96,
+  },
+  dividerLong: {
+    width: 156,
   },
   spacer: {
-    height: 8,
+    height: 28,
   },
   messageDot: {
     width: 11,
     height: 11,
     borderRadius: 5.5,
     backgroundColor: theme.colors.messageDot,
+  },
+  messageDotPlaceholder: {
+    width: 11,
+    height: 11,
+    opacity: 0,
   },
 });

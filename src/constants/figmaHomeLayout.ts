@@ -2,7 +2,7 @@ import { WEB_HOME } from "@/constants/layout";
 
 export const FIGMA_MAIN_SPACING = {
   contentPaddingTop: 36,
-  contentPaddingLeft: 0,
+  contentPaddingLeft: 28,
   contentPaddingRight: 40,
   contentPaddingBottom: 48,
   greetingMinHeight: 36,
