@@ -2,7 +2,6 @@ import { MOCK_APPOINTMENTS } from "@/constants/appointmentsMockData";
 import { FIGMA_APPOINTMENTS } from "@/constants/figmaAppointmentsLayout";
 import { MOBILE_LAYOUT } from "@/constants/layout";
 import { MOCK_PORTAL_SUMMARY } from "@/constants/mockData";
-import { ROUTES } from "@/constants/navigation";
 import { navigateFromMenuId } from "@/navigation/menuNavigation";
 import type { RootStackParamList } from "@/navigation/types";
 import { theme } from "@/theme";

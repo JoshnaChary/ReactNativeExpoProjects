@@ -35,7 +35,32 @@ const MenuDivider = ({ line }: { line: string }) => {
   return <View style={[styles.dividerLine, isLong ? styles.dividerLong : styles.dividerShort]} />;
 };
 
+// Build stable React keys for the sidebar nav list without relying on the map
+// callback's index (Sonar rule typescript:S6479). Links already carry unique
+// ids; spacers/dividers get a key derived from the most recent link plus how
+// many non-link items have appeared since, so the key stays stable as long as
+// the underlying sidebar data does.
+type KeyedNavItem = { item: SidebarNavItem; key: string };
+
+const buildKeyedNavItems = (nav: readonly SidebarNavItem[]): KeyedNavItem[] => {
+  const result: KeyedNavItem[] = [];
+  let prevLinkId = "start";
+  let sinceLink = 0;
+  for (const item of nav) {
+    if (item.kind === "link") {
+      prevLinkId = item.id;
+      sinceLink = 0;
+      result.push({ item, key: `link-${item.id}` });
+    } else {
+      sinceLink += 1;
+      result.push({ item, key: `${item.kind}-after-${prevLinkId}-${sinceLink}` });
+    }
+  }
+  return result;
+};
+
 export const Sidebar = ({ summary, onNavItemPress, selectedNavId }: SidebarProps) => {
+  const keyedItems = buildKeyedNavItems(summary.sidebarNav);
   return (
     <View style={styles.shell}>
       <View style={styles.strip}>
@@ -50,16 +75,16 @@ export const Sidebar = ({ summary, onNavItemPress, selectedNavId }: SidebarProps
           contentContainerStyle={styles.navInner}
           showsVerticalScrollIndicator={false}
         >
-          {summary.sidebarNav.map((item, index) => {
+          {keyedItems.map(({ item, key }) => {
             if (item.kind === "spacer") {
-              return <View key={`s-${index}`} style={styles.spacer} />;
+              return <View key={key} style={styles.spacer} />;
             }
             if (item.kind === "divider") {
-              return <MenuDivider key={`d-${index}`} line={item.line} />;
+              return <MenuDivider key={key} line={item.line} />;
             }
             return (
               <MenuItem
-                key={item.id}
+                key={key}
                 item={item}
                 onPress={onNavItemPress}
                 selectedNavId={selectedNavId}

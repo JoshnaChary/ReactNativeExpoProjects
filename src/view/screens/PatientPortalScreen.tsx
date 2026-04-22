@@ -12,7 +12,10 @@ export const PatientPortalScreen = () => {
   const { summary, isLoading, errorMessage, load } = usePatientPortalViewModel();
 
   useEffect(() => {
-    void load();
+    // load() is implemented to swallow its own errors and update state,
+    // so a defensive .catch keeps the floating-promise lint happy without
+    // re-introducing the confusing `void` operator (Sonar rule S3735).
+    load().catch(() => undefined);
   }, [load]);
 
   if (isLoading) {
@@ -27,7 +30,12 @@ export const PatientPortalScreen = () => {
     return (
       <View style={styles.centered}>
         <Text style={styles.error}>{errorMessage}</Text>
-        <Pressable onPress={() => void load()} style={styles.retryButton}>
+        <Pressable
+          onPress={() => {
+            load().catch(() => undefined);
+          }}
+          style={styles.retryButton}
+        >
           <Text style={styles.retryLabel}>{PORTAL_COPY.retry}</Text>
         </Pressable>
       </View>

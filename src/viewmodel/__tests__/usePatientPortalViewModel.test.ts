@@ -13,24 +13,21 @@ jest.mock("@/repository/patientPortalRepository", () => ({
 
 // Minimal zustand stub: the viewmodel only relies on create(...)'s set()/state
 // selectors, so emulating that avoids pulling React renderer into a pure-logic
-// test.
-jest.mock("zustand", () => {
-  return {
-    create:
-      (initializer: (set: unknown, get: unknown) => Record<string, unknown>) =>
-      (selector?: (state: Record<string, unknown>) => unknown) => {
-        const listeners = new Set<() => void>();
-        let state: Record<string, unknown> = {};
-        const setState = (partial: Record<string, unknown>) => {
-          state = { ...state, ...partial };
-          listeners.forEach((l) => l());
-        };
-        const getState = () => state;
-        state = initializer(setState, getState);
-        return selector ? selector(state) : state;
-      },
+// test. Declared as a top-level function to keep nesting within Sonar's
+// S2004 limit (max 4 levels deep) and to keep intent obvious.
+type MockState = Record<string, unknown>;
+type MockInitializer = (set: (partial: MockState) => void) => MockState;
+const mockCreateStore = (initializer: MockInitializer) => {
+  let state: MockState = {};
+  const setState = (partial: MockState) => {
+    state = { ...state, ...partial };
   };
-});
+  state = initializer(setState);
+  return (selector?: (s: MockState) => unknown) =>
+    selector ? selector(state) : state;
+};
+
+jest.mock("zustand", () => ({ create: mockCreateStore }));
 
 describe("usePatientPortalViewModel", () => {
   beforeEach(() => {

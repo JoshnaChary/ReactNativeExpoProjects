@@ -7,7 +7,7 @@ export type PatientPortalRepository = {
 
 class PatientPortalRepositoryImpl implements PatientPortalRepository {
   async getSummary(): Promise<PatientPortalSummary> {
-    return Promise.resolve(MOCK_PORTAL_SUMMARY);
+    return MOCK_PORTAL_SUMMARY;
   }
 }
 

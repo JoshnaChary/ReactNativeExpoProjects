@@ -6,7 +6,6 @@ import {
 import { MOCK_PORTAL_SUMMARY } from "@/constants/mockData";
 import { navigateFromMenuId } from "@/navigation/menuNavigation";
 import type { RootStackParamList } from "@/navigation/types";
-import type { MessageThread } from "@/model/MessagingCenter";
 import { theme } from "@/theme";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";

@@ -17,6 +17,11 @@ export const BillingWebView = () => {
   const [activeTab, setActiveTab] = useState<"outstanding" | "history" | "payment">(
     "outstanding",
   );
+  const tabIndicatorStyle = {
+    outstanding: styles.indicatorOutstanding,
+    history: styles.indicatorHistory,
+    payment: styles.indicatorPayment,
+  }[activeTab];
 
   return (
     <View style={styles.page}>
@@ -42,16 +47,7 @@ export const BillingWebView = () => {
               <Text style={activeTab === "payment" ? styles.tabActive : styles.tabInactive}>Payment</Text>
             </TouchableOpacity>
           </View>
-          <View
-            style={[
-              styles.tabIndicator,
-              activeTab === "outstanding"
-                ? styles.indicatorOutstanding
-                : activeTab === "history"
-                  ? styles.indicatorHistory
-                  : styles.indicatorPayment,
-            ]}
-          />
+          <View style={[styles.tabIndicator, tabIndicatorStyle]} />
 
           {activeTab === "outstanding" ? (
             <>

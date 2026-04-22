@@ -17,6 +17,11 @@ export const BillingMobileView = () => {
   const [activeTab, setActiveTab] = useState<"outstanding" | "history" | "payment">(
     "outstanding",
   );
+  const tabIndicatorStyle = {
+    outstanding: styles.indicatorOutstanding,
+    history: styles.indicatorHistory,
+    payment: styles.indicatorPayment,
+  }[activeTab];
 
   return (
     <MobileScreenScaffold
@@ -45,16 +50,7 @@ export const BillingMobileView = () => {
             <Text style={activeTab === "payment" ? styles.tabActive : styles.tabInactive}>Payment</Text>
           </TouchableOpacity>
         </View>
-        <View
-          style={[
-            styles.tabIndicator,
-            activeTab === "outstanding"
-              ? styles.indicatorOutstanding
-              : activeTab === "history"
-                ? styles.indicatorHistory
-                : styles.indicatorPayment,
-          ]}
-        />
+        <View style={[styles.tabIndicator, tabIndicatorStyle]} />
 
         {activeTab === "outstanding" ? (
           <>

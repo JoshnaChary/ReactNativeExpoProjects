@@ -17,6 +17,11 @@ export const AccountWebView = () => {
   const [activeTab, setActiveTab] = useState<"settings" | "notifications" | "delegates">(
     "settings",
   );
+  const tabIndicatorStyle = {
+    settings: styles.indicatorSettings,
+    notifications: styles.indicatorNotifications,
+    delegates: styles.indicatorDelegates,
+  }[activeTab];
 
   return (
     <View style={styles.page}>
@@ -49,16 +54,7 @@ export const AccountWebView = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View
-            style={[
-              styles.tabIndicator,
-              activeTab === "settings"
-                ? styles.indicatorSettings
-                : activeTab === "notifications"
-                  ? styles.indicatorNotifications
-                  : styles.indicatorDelegates,
-            ]}
-          />
+          <View style={[styles.tabIndicator, tabIndicatorStyle]} />
 
           {activeTab === "settings" ? (
             <View style={styles.list}>

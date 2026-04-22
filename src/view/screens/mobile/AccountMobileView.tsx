@@ -17,6 +17,11 @@ export const AccountMobileView = () => {
   const [activeTab, setActiveTab] = useState<"settings" | "notifications" | "delegates">(
     "settings",
   );
+  const tabIndicatorStyle = {
+    settings: styles.indicatorSettings,
+    notifications: styles.indicatorNotifications,
+    delegates: styles.indicatorDelegates,
+  }[activeTab];
 
   return (
     <MobileScreenScaffold
@@ -47,16 +52,7 @@ export const AccountMobileView = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View
-          style={[
-            styles.tabIndicator,
-            activeTab === "settings"
-              ? styles.indicatorSettings
-              : activeTab === "notifications"
-                ? styles.indicatorNotifications
-                : styles.indicatorDelegates,
-          ]}
-        />
+        <View style={[styles.tabIndicator, tabIndicatorStyle]} />
 
         {activeTab === "settings" ? (
           <View style={styles.list}>

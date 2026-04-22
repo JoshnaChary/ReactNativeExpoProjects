@@ -74,6 +74,7 @@ const NavRow = ({
   if (item.kind === "spacer") {
     return <View style={styles.menuSpacer} />;
   }
+  const showDot = selectedNavId ? item.id === selectedNavId : item.showMessageDot;
   return (
     <Pressable
       style={styles.menuLinkRow}
@@ -81,7 +82,7 @@ const NavRow = ({
       onPress={() => onSelectItem(item.id)}
     >
       <Text style={styles.menuLink}>{item.label}</Text>
-      {(selectedNavId ? item.id === selectedNavId : item.showMessageDot) ? (
+      {showDot ? (
         <View style={styles.menuDot} />
       ) : (
         <View style={styles.menuDotPlaceholder} />
