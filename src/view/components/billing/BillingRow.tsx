@@ -7,58 +7,54 @@ type BillingRowProps = {
   compact?: boolean;
 };
 
+// Map the compact flag to the matching style keys so the JSX below renders
+// exactly one tree and Sonar doesn't see the old near-identical duplicate
+// branches (previously 26 lines / 335 tokens).
+const pickVariant = (compact: boolean) =>
+  compact
+    ? {
+        card: styles.cardCompact,
+        left: styles.leftCompact,
+        meta: styles.metaCompact,
+        actions: styles.actionsCompact,
+        secondaryBtn: styles.secondaryBtnCompact,
+        primaryBtn: styles.primaryBtnCompact,
+      }
+    : {
+        card: styles.card,
+        left: styles.left,
+        meta: styles.metaCol,
+        actions: styles.actions,
+        secondaryBtn: styles.secondaryBtn,
+        primaryBtn: styles.primaryBtn,
+      };
+
 export const BillingRow = ({ item, compact = false }: BillingRowProps) => {
-  if (compact) {
-    return (
-      <View style={styles.cardCompact}>
-        {item.statusTone === "overdue" ? <View style={styles.overdueBar} /> : null}
-
-        <View style={styles.leftCompact}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.amount}>{item.amount}</Text>
-        </View>
-
-        <View style={styles.metaCompact}>
-          <Text style={styles.meta}>Invoice ID: {item.invoiceId}</Text>
-          <Text style={styles.meta}>Due date: {item.dueDate}</Text>
-          <Text style={[styles.meta, item.statusTone === "overdue" && styles.overdueText]}>
-            Status: {item.statusLabel}
-          </Text>
-        </View>
-
-        <View style={styles.actionsCompact}>
-          <Pressable accessibilityRole="button" style={styles.secondaryBtnCompact}>
-            <Text style={styles.secondaryBtnText}>View Details</Text>
-          </Pressable>
-          <Pressable accessibilityRole="button" style={styles.primaryBtnCompact}>
-            <Text style={styles.primaryBtnText}>Pay Now</Text>
-          </Pressable>
-        </View>
-      </View>
-    );
-  }
+  const v = pickVariant(compact);
+  const isOverdue = item.statusTone === "overdue";
 
   return (
-    <View style={styles.card}>
-      {item.statusTone === "overdue" ? <View style={styles.overdueBar} /> : null}
-      <View style={styles.left}>
+    <View style={v.card}>
+      {isOverdue ? <View style={styles.overdueBar} /> : null}
+
+      <View style={v.left}>
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.amount}>{item.amount}</Text>
       </View>
 
-      <View style={styles.metaCol}>
+      <View style={v.meta}>
         <Text style={styles.meta}>Invoice ID: {item.invoiceId}</Text>
         <Text style={styles.meta}>Due date: {item.dueDate}</Text>
-        <Text style={[styles.meta, item.statusTone === "overdue" && styles.overdueText]}>
+        <Text style={[styles.meta, isOverdue && styles.overdueText]}>
           Status: {item.statusLabel}
         </Text>
       </View>
 
-      <View style={styles.actions}>
-        <Pressable accessibilityRole="button" style={styles.secondaryBtn}>
+      <View style={v.actions}>
+        <Pressable accessibilityRole="button" style={v.secondaryBtn}>
           <Text style={styles.secondaryBtnText}>View Details</Text>
         </Pressable>
-        <Pressable accessibilityRole="button" style={styles.primaryBtn}>
+        <Pressable accessibilityRole="button" style={v.primaryBtn}>
           <Text style={styles.primaryBtnText}>Pay Now</Text>
         </Pressable>
       </View>
