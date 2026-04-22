@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Required so SonarCloud can relate analyses back to pull requests.
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  test-and-coverage:
+    name: Test, upload coverage to SonarCloud & Qlty
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # SonarCloud needs full history + the PR HEAD (not the merge commit)
+          # to compute new-code coverage correctly.
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests with coverage
+        run: npm run test:coverage -- --watchman=false --ci
+
+      - name: Verify lcov report exists
+        # Fail fast with a clear message if the lcov file wasn't produced —
+        # this is the single most common reason Sonar/Qlty dashboards show no
+        # coverage even when CI is green.
+        run: |
+          if [ ! -s coverage/lcov.info ]; then
+            echo "::error::coverage/lcov.info is missing or empty; Sonar/Qlty upload will show 0% coverage."
+            exit 1
+          fi
+          echo "lcov.info size: $(wc -c < coverage/lcov.info) bytes"
+
+      - name: SonarCloud scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # sonar-project.properties in the repo root supplies organization,
+          # projectKey, sources, and sonar.javascript.lcov.reportPaths.
+          args: >
+            -Dsonar.host.url=https://sonarcloud.io
+
+      - name: Upload coverage to Qlty
+        uses: qltysh/qlty-action/coverage@v1
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: coverage/lcov.info
