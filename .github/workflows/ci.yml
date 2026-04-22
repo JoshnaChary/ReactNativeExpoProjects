@@ -48,7 +48,9 @@ jobs:
           echo "lcov.info size: $(wc -c < coverage/lcov.info) bytes"
 
       - name: SonarCloud scan
-        uses: SonarSource/sonarqube-scan-action@v5
+        # Pinned to a full commit SHA (Sonar rule githubactions:S7637). Update
+        # the SHA and the trailing tag comment together when bumping versions.
+        uses: SonarSource/sonarqube-scan-action@2f77a1ec69fb1d595b06f35ab27e97605bdef703 # v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -59,7 +61,9 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io
 
       - name: Upload coverage to Qlty
-        uses: qltysh/qlty-action/coverage@v1
+        # Pinned to a full commit SHA (Sonar rule githubactions:S7637). Update
+        # the SHA and the trailing tag comment together when bumping versions.
+        uses: qltysh/qlty-action/coverage@a2277a908db90c4c868832fb9204521fb940fdb4 # v1
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: coverage/lcov.info
